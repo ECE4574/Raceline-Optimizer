@@ -28,7 +28,7 @@ class RaceLine:
             float: square of sum of curvature 
         """
         
-        ddx, ddy = splev(self.dists, self.spline, 2)
+        ddx, ddy = splev(self.s, self.spline, 2)
         return np.sum(ddx**2 + ddy**2)
     def curvature(self):
         ddx, ddy = splev(self.dists, self.spline, 2)

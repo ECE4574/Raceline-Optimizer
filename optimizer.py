@@ -39,7 +39,7 @@ class Optimizer:
             float: squared sum of the curvature along track
         """
         self.update(alphas)
-        return self.raceline.gamma2(self.raceline.s)
+        return self.raceline.gamma2()
     
 
     def min_curve(self):
