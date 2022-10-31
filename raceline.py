@@ -21,7 +21,7 @@ class RaceLine:
         d = np.cumsum(np.linalg.norm(np.diff(points, axis=1), axis=0))
         return np.append(0, d)
     def gamma2(self):
-        """calcualtes the square sum of curvature of the path around the track
+        """Calcualtes the square sum of curvature of the path around the track
 
 
         Returns:
@@ -30,10 +30,16 @@ class RaceLine:
         
         ddx, ddy = splev(self.s, self.spline, 2)
         return np.sum(ddx**2 + ddy**2)
-    def curvature(self):
-        ddx, ddy = splev(self.dists, self.spline, 2)
-        return np.sum(ddx**2 + ddy**2)
+    def curvature(self, samples = None):
+        if samples is None:
+            samples = self.dists
+        ddx, ddy = splev(samples, self.spline, 2)
+        return np.sqrt(ddx**2 + ddy**2)
     def sample_every_meter(self):
         # Sample every metre
         #split track into sectors from 0 to length generating length samples  
         self.s = np.linspace(0, self.length, math.ceil(self.length))
+    def position(self, s=None):
+        """Returns x-y coordinates of sample points."""
+        x, y = splev(s, self.spline)
+        return np.array([x, y])
