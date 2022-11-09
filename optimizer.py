@@ -15,6 +15,7 @@ class Optimizer:
         self.vehicle = vehicle 
         self.update(np.full(track.size, 0.5))
         self.vel = VelocityMap(vehicle)
+        self.epshis = {}
     def update(self,alphas):
         """Update function updates the path for a certain 
         inputted alpahs 
@@ -57,16 +58,45 @@ class Optimizer:
         self.update(alphas)
         self.update_vel()
         return self.lap_time()
+    def minEps(self):
+        def fun(eps):
+            self.minCurve(eps)
+            self.update_vel()
+            lap_time = self.lap_time()
+            self.epshis[lap_time] =  eps
+            return lap_time
+        res = minimize_scalar(
+            fun=fun,
+            method='bounded',
+            bounds=(0, 1)
+            )
+        
+        return res.x
     
-    def minLapTime(self):
+    def minCurve(self, eps):
+        def fun(alphas):
+            """Updates the path after very iteration of the minimzing
+            alogirthm and returns the new sum of curvature of the track 
+            Args:
+                alphas (list): alpha values from 0 to 1
+            Returns:
+                float: squared sum of the curvature along track
+            """
+            self.update(alphas)
+            return self.raceline.gamma2()*eps + (1-eps)* self.raceline.length
         res = minimize(
-            fun=self.fun,
+            fun=fun,
             x0 = np.full(self.track.size, 0.5),
             method='L-BFGS-B',
             bounds=Bounds(0.0, 1.0)
             
         )
         self.update(res.x)
+        
+        
+    def minLapTime(self):
+        best_eps = self.minEps()
+        self.minCurve(best_eps)
         self.update_vel()
         
         
