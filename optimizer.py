@@ -1,7 +1,11 @@
+
+"""
+optimizer.cpp    Walid Zeineldin     Virginia Tech       Dec 5th, 2020 
+This file holdes the functions used for running the analysis on the track
+"""
 from scipy.optimize import Bounds, minimize, minimize_scalar
 from scipy.interpolate import splev, splprep
 import numpy as np
-import math 
 from raceline import RaceLine
 from helpers import VelocityMap
 

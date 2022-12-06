@@ -58,7 +58,7 @@ def plot_trajectory(left, right, samples, velocities):
   segments = np.concatenate([p[:-1], p[1:]], axis=1)
   norm = plt.Normalize(np.amin(velocities), np.amax(velocities))
   lc = LineCollection(
-    segments, array=velocities, norm=norm, linewidth=2, zorder=2
+    segments, array=velocities, norm=norm, linewidth=1.5, zorder=2
   )
   plt.gca().add_collection(lc)
   plt.gcf().colorbar(
@@ -74,26 +74,27 @@ f = open('buckmore.json')
 data = json.load(f)
 left = np.array([data["left"]["x"], data["left"]["y"]]) #left coor
 right = np.array([data["right"]["x"], data["right"]["y"]]) #right corr
-print(len(left[0]))
+
+start = time.time()
 tg = TrackDataGenerator()
-# coord = tg.get_center_line_coord_from_raw_image('raw_track_image/track.png')
-# width = 50
-# tg.save_track_data_to_file('track.json', coord, width)
-left, center,right, _ = tg.read_track_lines_v2('track.json', sample_num=201, smooth_kernel_length=4)
+coord = tg.get_center_line_coord_from_raw_image('raw_track_image/track.png')
+width = 35
+tg.save_track_data_to_file('track.json', coord, width)
+left, center,right, _, scale = tg.read_track_lines_v2('track.json', sample_num=201, smooth_kernel_length=4)
 # off = 1
-print(len(left[0]))
 # left = np.array([left[0][::off],left[1][::off]])
 # right = np.array([right[0][::off], right[1][::off]])
 
 drawTrack(left,right)
 track = Track(left,right)
-ve = Vehical(795,1.7,6114)
+ve = Vehical(795,2,6114)
 opt = Optimizer(track, ve)
-start = time.time()
+
 opt.minLapTime()
 end = time.time()
 
 print(end - start)
+opt.vel.v_final = opt.vel.v_final* np.sqrt(1/scale) 
 plot_trajectory(left,right,opt.raceline.position(opt.raceline.s), opt.vel.v_final)
 # tg = TrackDataGenerator()
 # coord = tg.get_center_line_coord_from_raw_image('raw_track_image/track.png')

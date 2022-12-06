@@ -1,3 +1,10 @@
+"""
+helper.py   Walid Zeineldin     Virginia Tech       Dec 5th, 2020 
+This file holdes the helper classes that are used by optimizer
+Track: holds track information and track realted functions
+Vehical: holds vehical infromation
+VelocityMap: Holds and updates velocity map for a specific car, around a specific path
+"""
 from math import sqrt
 import numpy as np
 
